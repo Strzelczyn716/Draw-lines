@@ -1,7 +1,8 @@
-package com.example.draw_lines
+package com.example.draw_lines.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.draw_lines.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
