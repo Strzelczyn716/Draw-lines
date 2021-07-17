@@ -13,6 +13,6 @@
     <item name="button_layout_horizontal_bias" type="dimen">0.9</item>
     <item name="button_input_layout_vertical_bias" type="dimen">0.457</item>
 
-    <item name="text_input_digits" type="dimen">-0123456789.</item>
+    <item name="text_input_digits" type="dimen">0123456789.-</item>
 
 </resources>

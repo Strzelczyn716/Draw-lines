@@ -4,19 +4,28 @@ import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.draw_lines.data.model.Line
+import com.example.draw_lines.data.repository.LineRepository
 import com.example.draw_lines.utils.SingleLiveEvent
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
-class DrawViewModel : ViewModel() {
+class DrawViewModel : ViewModel(), KoinComponent {
 
     companion object {
         private const val AXIS_LIMIT = 6.0
         private const val ALFA_COLOR = 255
-        private const val COLOR = 206
-        private const val STATIC_COLOR = 50
+        private const val COLOR = 256
+        private const val STATIC_COLOR = -50
     }
+
+    private val repository: LineRepository by inject()
 
     private val _callDraw = SingleLiveEvent<Boolean>()
     val callDraw: LiveData<Boolean> get() = _callDraw
@@ -58,4 +67,17 @@ class DrawViewModel : ViewModel() {
         }
         return series
     }
+
+    private fun updateLine(line: Line) {
+        CoroutineScope(IO).launch {
+            repository.update(line)
+        }
+    }
+
+    private fun addLine(line: Line) {
+        CoroutineScope(IO).launch {
+            repository.insertAll(line)
+        }
+    }
+
 }
