@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="a_text_input_layout_horizontal_bias" type="dimen">0.1</item>
+    <item name="a_text_input_layout_vertical_bias" type="dimen">0.45</item>
+
+    <item name="b_text_input_layout_vertical_bias" type="dimen">0.45</item>
+
+    <item name="scroll_view_layout_margin_start" type="dimen">8dp</item>
+    <item name="scroll_view_layout_margin_end" type="dimen">8dp</item>
+
+    <item name="scroll_view_layout_constraintVertical_bias" type="dimen">0.7</item>
+
+    <item name="button_layout_horizontal_bias" type="dimen">0.9</item>
+    <item name="button_input_layout_vertical_bias" type="dimen">0.457</item>
+
+    <item name="text_input_digits" type="dimen">-0123456789.</item>
+
+</resources>

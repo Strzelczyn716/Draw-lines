@@ -17,20 +17,20 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/aTextInputLayout"
-            android:layout_width="80dp"
+            android:layout_width="@dimen/text_input_layout_width"
             android:layout_height="wrap_content"
             android:hint="@string/hint_a"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintHorizontal_bias="@dimen/a_text_input_layout_horizontal_bias"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45">
+            app:layout_constraintVertical_bias="@dimen/a_text_input_layout_vertical_bias">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:digits="-0123456789."
+                android:digits="@dimen/text_input_digits"
                 android:inputType="number"
                 android:singleLine="true"
                 android:text="@={viewModel.valueA}" />
@@ -38,15 +38,16 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ScrollView
-            android:id="@+id/scrollView2"
-            android:layout_width="409dp"
-            android:layout_height="450dp"
+            android:id="@+id/scrollView"
+            android:layout_width="@dimen/scroll_view_layout_width"
+            android:layout_height="@dimen/scroll_view_layout_height"
+            android:layout_marginStart="@dimen/scroll_view_layout_margin_start"
+            android:layout_marginEnd="@dimen/scroll_view_layout_margin_end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.7">
+            app:layout_constraintVertical_bias="@dimen/scroll_view_layout_constraintVertical_bias">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,9 +57,7 @@
                 <com.jjoe64.graphview.GraphView
                     android:id="@+id/graph"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_height="match_parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
@@ -68,19 +67,19 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/bTextInputLayout"
-            android:layout_width="80dp"
+            android:layout_width="@dimen/text_input_layout_width"
             android:layout_height="wrap_content"
             android:hint="@string/hint_b"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.45">
+            app:layout_constraintVertical_bias="@dimen/b_text_input_layout_vertical_bias">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:digits="-0123456789."
+                android:digits="@dimen/text_input_digits"
                 android:inputType="number"
                 android:singleLine="true"
                 android:text="@={viewModel.valueB}" />
@@ -94,12 +93,12 @@
             android:onClick="@{()->viewModel.onClickCallDraw()}"
             android:text="@string/button"
             android:textAllCaps="false"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintHorizontal_bias="@dimen/button_layout_horizontal_bias"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.457" />
+            app:layout_constraintVertical_bias="@dimen/button_input_layout_vertical_bias" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

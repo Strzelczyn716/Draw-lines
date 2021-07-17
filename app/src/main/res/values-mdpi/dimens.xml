@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="scroll_view_layout_width" type="dimen">270dp</item>
+    <item name="scroll_view_layout_height" type="dimen">300dp</item>
+    <item name="text_input_layout_width" type="dimen">70dp</item>
+</resources>
