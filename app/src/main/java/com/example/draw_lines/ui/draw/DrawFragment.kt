@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.draw_lines.R
 import com.example.draw_lines.databinding.FragmentDrawBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class DrawFragment : Fragment() {
@@ -26,6 +26,7 @@ class DrawFragment : Fragment() {
     private var _binding: FragmentDrawBinding? = null
     private val binding get() = _binding!!
     private val viewModel: DrawViewModel by viewModels()
+    private val lineAdapter = LineAdapter { it -> viewModel.update(it) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +35,7 @@ class DrawFragment : Fragment() {
         _binding = FragmentDrawBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        binding.recyclerView.adapter = lineAdapter
         return binding.root
     }
 
@@ -50,6 +52,10 @@ class DrawFragment : Fragment() {
         graph.legendRenderer.backgroundColor = resources.getColor(android.R.color.white)
         graph.legendRenderer.setFixedPosition(LEGEND_POSITION, LEGEND_POSITION)
         registerObserver()
+        CoroutineScope(IO).launch {
+            delay(2000)
+            viewModel.drawAll()
+        }
     }
 
     override fun onDestroy() {
@@ -58,23 +64,21 @@ class DrawFragment : Fragment() {
     }
 
     private fun registerObserver() {
-        viewModel.callDraw.observe(viewLifecycleOwner, {
-            CoroutineScope(IO).launch {
-                val series = viewModel.formatData()
-                if (series != null) {
-                    binding.graph.addSeries(
-                        series
-                    )
-                } else {
-                    withContext(Main) {
-                        Toast.makeText(
-                            context,
-                            resources.getText(R.string.bad_data),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
+        viewModel.allData.observe(viewLifecycleOwner, Observer {
+            lineAdapter.setData(it)
+        })
+        viewModel.toRemove.observe(viewLifecycleOwner, {
+            binding.graph.removeSeries(it)
+        })
+        viewModel.toDraw.observe(viewLifecycleOwner, {
+            binding.graph.addSeries(it)
+        })
+        viewModel.callError.observe(viewLifecycleOwner, {
+            Toast.makeText(
+                context,
+                resources.getText(R.string.bad_data),
+                Toast.LENGTH_SHORT
+            ).show()
         })
     }
 }

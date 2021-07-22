@@ -22,50 +22,87 @@ class DrawViewModel : ViewModel(), KoinComponent {
         private const val AXIS_LIMIT = 6.0
         private const val ALFA_COLOR = 255
         private const val COLOR = 256
-        private const val STATIC_COLOR = -50
+        private const val STATIC_COLOR = -70
     }
 
     private val repository: LineRepository by inject()
 
-    private val _callDraw = SingleLiveEvent<Boolean>()
-    val callDraw: LiveData<Boolean> get() = _callDraw
+    private val _allData = repository.getAll()
+    val allData: LiveData<List<Line>> get() = _allData
+
+    private val map = mutableMapOf<String, LineGraphSeries<DataPoint>>()
+
+    private val _toDraw = SingleLiveEvent<LineGraphSeries<DataPoint>>()
+    val toDraw: LiveData<LineGraphSeries<DataPoint>> get() = _toDraw
+
+    private val _toRemove = SingleLiveEvent<LineGraphSeries<DataPoint>>()
+    val toRemove: LiveData<LineGraphSeries<DataPoint>> get() = _toRemove
+
+    private val _callError = SingleLiveEvent<Boolean>()
+    val callError: LiveData<Boolean> get() = _callError
 
     val valueA = MutableLiveData<String>()
     val valueB = MutableLiveData<String>()
 
+
     fun onClickCallDraw() {
-        _callDraw.postValue(true)
-    }
-
-    fun formatData(): LineGraphSeries<DataPoint>? {
-        return try {
-            drawLine(valueA.value?.toFloat()!!, valueB.value?.toFloat()!!)
+        try {
+            drawLine(valueA.value?.toFloat()!!, valueB.value?.toFloat()!!, false)
         } catch (nfe: NumberFormatException) {
-            null
+            _callError.postValue(true)
         }
     }
 
-    private fun drawLine(valueA: Float, valueB: Float): LineGraphSeries<DataPoint> {
-        val series = LineGraphSeries(
-            arrayOf(
-                DataPoint(-AXIS_LIMIT, valueA * (-AXIS_LIMIT) + valueB),
-                DataPoint(AXIS_LIMIT, valueA * (AXIS_LIMIT) + valueB)
-            )
-        )
-        val rnd = Random()
-        series.color =
-            Color.argb(
-                ALFA_COLOR,
-                rnd.nextInt(COLOR) + STATIC_COLOR,
-                rnd.nextInt(COLOR) + STATIC_COLOR,
-                rnd.nextInt(COLOR) + STATIC_COLOR
-            )
-        if (valueB < 0) {
-            series.title = "${valueA}x${valueB}"
+    fun update(it: Line) {
+        updateLine(it)
+        if (!it.draw) {
+            val key = if (it.valueB < 0) {
+                "${it.valueA}x${it.valueB}"
+            } else {
+                "${it.valueA}x+${it.valueB}"
+            }
+            _toRemove.postValue(map[key])
         } else {
-            series.title = "${valueA}x+${valueB}"
+            drawLine(it.valueA, it.valueB, true)
         }
-        return series
+    }
+
+    fun drawAll() {
+        allData.value?.filter { it -> it.draw }
+            ?.forEach { drawLine(it.valueA, it.valueB, true) }
+    }
+
+    private fun drawLine(
+        valueA: Float,
+        valueB: Float,
+        reDraw: Boolean
+    ) {
+        CoroutineScope(IO).launch {
+            val series = LineGraphSeries(
+                arrayOf(
+                    DataPoint(-AXIS_LIMIT, valueA * (-AXIS_LIMIT) + valueB),
+                    DataPoint(AXIS_LIMIT, valueA * (AXIS_LIMIT) + valueB)
+                )
+            )
+            val rnd = Random()
+            series.color =
+                Color.argb(
+                    ALFA_COLOR,
+                    rnd.nextInt(COLOR) + STATIC_COLOR,
+                    rnd.nextInt(COLOR) + STATIC_COLOR,
+                    rnd.nextInt(COLOR) + STATIC_COLOR
+                )
+            if (valueB < 0) {
+                series.title = "${valueA}x${valueB}"
+            } else {
+                series.title = "${valueA}x+${valueB}"
+            }
+            map[series.title] = series
+            if (!reDraw) {
+                addLine(Line(0, valueA, valueB, true))
+            }
+            _toDraw.postValue(series)
+        }
     }
 
     private fun updateLine(line: Line) {

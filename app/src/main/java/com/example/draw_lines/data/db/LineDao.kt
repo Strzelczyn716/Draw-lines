@@ -10,7 +10,7 @@ import com.example.draw_lines.data.model.Line
 @Dao
 interface LineDao {
 
-    @Query("SELECT * FROM line_table ORDER BY draw DESC")
+    @Query("SELECT * FROM line_table ORDER BY id DESC")
     fun getAll(): LiveData<List<Line>>
 
     @Insert
